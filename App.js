@@ -10,6 +10,8 @@ import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
 import cors from "cors";
 import session from "express-session";
 import EnrollmentsRoutes from "./Kanbas/Enrollments/routes.js";
+import "dotenv/config";
+
 
 const app = express();
 
@@ -20,6 +22,12 @@ app.use(
   })
 );
 
+// const corsOptions = {
+//   origin: "https://a5--mellow-axolotl-011755.netlify.app", // Your frontend URL
+//   credentials: true,
+// };
+
+// app.use(cors(corsOptions));
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kanbas",
