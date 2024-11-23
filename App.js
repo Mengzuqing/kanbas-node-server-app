@@ -20,12 +20,6 @@ app.use(
   })
 );
 
-// const corsOptions = {
-//   origin: "https://a5--mellow-axolotl-011755.netlify.app", // Your frontend URL
-//   credentials: true,
-// };
-
-// app.use(cors(corsOptions));
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kanbas",
