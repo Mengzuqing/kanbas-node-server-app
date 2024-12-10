@@ -1,64 +1,101 @@
 import mongoose from "mongoose";
 
-const questionSchema = new mongoose.Schema(
+const quizSchema = new mongoose.Schema(
   {
-    quizId: {
+    courseId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Quiz",
-      required: true,
-    },
-    type: {
-      type: String,
-      enum: ["Multiple Choice", "True/False", "Fill in the Blank"],
+      ref: "Course",
       required: true,
     },
     title: {
       type: String,
       required: true,
     },
-    text: {
+    description: {
       type: String,
       default: "",
     },
+    type: {
+      type: String,
+      enum: [
+        "Graded Quiz",
+        "Practice Quiz",
+        "Graded Survey",
+        "Ungraded Survey",
+      ],
+      default: "Graded Quiz",
+    },
+    assignmentGroup: {
+      type: String,
+      enum: ["Quizzes", "Exams", "Assignments", "Project"],
+      default: "Quizzes",
+    },
     points: {
       type: Number,
+      default: 0,
+    },
+    shuffleAnswers: {
+      type: Boolean,
+      default: true,
+    },
+    timeLimit: {
+      type: Number, // Time in minutes
+      default: 20,
+    },
+    multipleAttempts: {
+      type: Boolean,
+      default: false,
+    },
+    maxAttempts: {
+      type: Number,
+      default: 1,
+    },
+    showCorrectAnswers: {
+      type: Boolean,
+      default: false,
+    },
+    accessCode: {
+      type: String,
+      default: "",
+    },
+    oneQuestionAtATime: {
+      type: Boolean,
+      default: true,
+    },
+    webcamRequired: {
+      type: Boolean,
+      default: false,
+    },
+    lockQuestionsAfterAnswering: {
+      type: Boolean,
+      default: false,
+    },
+    dueDate: {
+      type: Date,
       required: true,
     },
-    choices: [
-      {
-        choiceText: {
-          type: String,
-          required: function () {
-            return this.type === "Multiple Choice";
-          },
-        },
-        isCorrect: {
-          type: Boolean,
-          required: function () {
-            return this.type === "Multiple Choice";
-          },
-        },
-      },
-    ],
-    correctAnswers: [
-      {
-        type: String,
-        required: function () {
-          return this.type === "Fill in the Blank";
-        },
-      },
-    ],
-    trueFalseAnswer: {
-      type: Boolean,
-      required: function () {
-        return this.type === "True/False";
-      },
+    availableDate: {
+      type: Date,
+      required: true,
     },
+    untilDate: {
+      type: Date,
+      required: true,
+    },
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
+    questions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Question",
+      },
+    ],
   },
   {
     timestamps: true,
-    collection: "questions",
+    collection: "quizzes"
   }
 );
-
-export default questionSchema;
+export default quizSchema;
