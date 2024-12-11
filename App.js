@@ -16,11 +16,6 @@ import QuizzesRoutes from "./Kanbas/Quizzes/routes.js";
 import QuestionsRoutes from "./Kanbas/Questions/routes.js";
 import AttemptsRoutes from "./Kanbas/Attempts/routes.js";
 import PreviewsRoutes from "./Kanbas/Previews/routes.js";
-import MongoStore from "connect-mongo";
-
-
-
-
 
 console.log("Environment Variables:", process.env.MONGO_CONNECTION_STRING);
 
@@ -29,7 +24,6 @@ const CONNECTION_STRING =
 mongoose.connect(CONNECTION_STRING);
 
 const app = express();
-
 
 app.use(
   cors({
@@ -42,22 +36,14 @@ app.use(
 //   origin: "https://a5--mellow-axolotl-011755.netlify.app", // Your frontend URL
 //   credentials: true,
 // };
+
 // app.use(cors(corsOptions));
-//-------------------------------------------------
-// const sessionOptions = {
-//   secret: process.env.SESSION_SECRET || "kanbas",
-//   resave: false,
-//   saveUninitialized: false,
-// };
+
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kanbas",
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_CONNECTION_STRING,
-  }),
 };
-
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -66,11 +52,6 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-
-
-
-
-
 app.use(session(sessionOptions));
 
 app.use(express.json());
