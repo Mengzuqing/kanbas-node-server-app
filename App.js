@@ -20,15 +20,32 @@ import PreviewsRoutes from "./Kanbas/Previews/routes.js";
 console.log("Environment Variables:", process.env.MONGO_CONNECTION_STRING);
 
 const CONNECTION_STRING =
-  process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
+  process.env.MONGO_CONNECTION_STRING || "mongodb+srv://mengzuq:Mzq200062.@kanbas.iu748.mongodb.net/?retryWrites=true&w=majority&appName=Kanbas";
 mongoose.connect(CONNECTION_STRING);
 
 const app = express();
 
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.NETLIFY_URL || "http://localhost:3000",
+//   })
+// );
 app.use(
   cors({
     credentials: true,
-    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        process.env.NETLIFY_URL,
+        "http://localhost:3000",
+  
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 
