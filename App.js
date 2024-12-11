@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import cors from "cors";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 import HelloRoutes from "./hello.js";
 import Lab5 from "./Lab5/index.js";
@@ -25,12 +26,7 @@ mongoose.connect(CONNECTION_STRING);
 
 const app = express();
 
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: process.env.NETLIFY_URL || "http://localhost:3000",
-//   })
-// );
+// CORS configuration
 app.use(
   cors({
     credentials: true,
@@ -38,29 +34,28 @@ app.use(
       const allowedOrigins = [
         process.env.NETLIFY_URL,
         "http://localhost:3000",
-  
+        "https://kanbas-node-server-app-quizzes2.onrender.com", // Replace with your Render app's URL
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("CORS blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
   })
 );
 
-// const corsOptions = {
-//   origin: "https://a5--mellow-axolotl-011755.netlify.app", // Your frontend URL
-//   credentials: true,
-// };
-
-// app.use(cors(corsOptions));
-
+// Session configuration
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kanbas",
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: CONNECTION_STRING, // Using MongoDB to store session
+  }),
 };
+
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -69,12 +64,12 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
+
 app.use(session(sessionOptions));
 
 app.use(express.json());
 
-///////////////////////////////////////////////////
-
+// Importing and applying routes
 Lab5(app);
 HelloRoutes(app);
 UserRoutes(app);
@@ -87,4 +82,7 @@ QuestionsRoutes(app);
 AttemptsRoutes(app);
 PreviewsRoutes(app);
 
-app.listen(process.env.PORT || 4000);
+// Start the server
+app.listen(process.env.PORT || 4000, () => {
+  console.log(`Server is running on port ${process.env.PORT || 4000}`);
+});
